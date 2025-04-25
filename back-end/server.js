@@ -1,10 +1,13 @@
 /*
 [x] POST /api/user/create
 [ ] POST /api/user/update
+[ ] POST /api/user/delete
 
-[ ] POST /api/login
+[ ] GET /api/users
 
-[ ] POST /api/{id}/score
+[x] POST /api/login
+
+[x] POST /api/{id}/score
 [ ] GET  /api/{id}/score
 */
 
@@ -17,7 +20,8 @@ const { sign, verify } = jwtpkg;
 import {
     addNewUser,
     getPassword,
-    addNewScore
+    addNewScore,
+    getScoresFromID
 } from "./routes/auth.js"
 
 
@@ -68,6 +72,7 @@ app.post("/api/user/create", async (req, res) => {
 })
 
 app.post("/api/user/update", async (req, res) => {})
+app.post("/api/user/delete", async (req, res) => {})
 
 app.post("/api/login", async (req, res) => {
     const { username, password } = req.body
@@ -134,7 +139,27 @@ app.post("/api/score", async (req, res) => {
     })
 })
 
-app.get("/api/:id/score", async (req, res) => {})
+app.get("/api/:id/score", async (req, res) => {
+    const { id } = req.params
+
+    if (id <= 0) {
+        sendError(res, 403, "ID can't be zero or negative.")
+        return
+    }
+
+    let scores
+
+    await getScoresFromID(id)
+        .then((result) => {
+            scores = result
+        }).catch((err) => {
+            sendError(res, 500, err)
+        });
+
+    res.status(200).send({
+        "scores": scores
+    })
+})
 
 function sendError(res, statuscode, error) {
     res.status(statuscode).send({

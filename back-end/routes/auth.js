@@ -91,3 +91,31 @@ export async function addNewScore(userid, score) {
         });
     });
 }
+
+export async function getScoresFromID(userId) {
+    return new Promise((resolve, reject) => {
+        const sql = `
+            SELECT id, score, date_taken 
+            FROM scores 
+            WHERE user_id = ? 
+            ORDER BY date_taken DESC
+        `;
+
+        db.all(sql, [userId], (err, rows) => {
+            if (err) {
+                console.error('Database error when retrieving scores:', err.message);
+                reject(err);
+                return;
+            }
+
+            // If no scores found, return empty array
+            if (!rows || rows.length === 0) {
+                resolve([]);
+                return;
+            }
+
+            // Return array of score objects
+            resolve(rows);
+        });
+    });
+}
