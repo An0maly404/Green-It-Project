@@ -3,90 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green IT</title>
+    <title>Green IT - Questions</title>
     <link rel="stylesheet" href="../style/style.css">
 </head>
 <body>
     <header>
+        <div class="logo">Green IT</div>
         <nav>
             <a href="main_login.html">Home</a>
             <a href="questions.html">Questions</a>
             <a href="results.html">Results</a>
         </nav>
     </header>
-    <h1>Digital Footprint Calculator</h1>
 
-    <form id="footprint-form">
-        <label for="device-hours">Hours on devices daily:</label>
-        <input type="number" id="device-hours" min="0" required><br>
+    <main>
+        <h1>Digital Footprint Calculator</h1>
 
-        <label for="streaming-hours">Streaming hours weekly:</label>
-        <input type="number" id="streaming-hours" min="0" required><br>
+        <form id="footprint-form" class="login-form">
+            <label for="device-hours">Hours on devices daily:</label>
+            <input type="number" id="device-hours" name="device-hours" min="0" required><br>
 
-        <label for="emails">Emails sent/received daily:</label>
-        <input type="number" id="emails" min="0" required><br>
+            <label for="streaming-hours">Streaming hours weekly:</label>
+            <input type="number" id="streaming-hours" name="streaming-hours" min="0" required><br>
 
-        <label for="cloud-storage">Cloud storage used (GB):</label>
-        <input type="number" id="cloud-storage" min="0" required><br>
+            <label for="emails">Emails sent/received daily:</label>
+            <input type="number" id="emails" name="emails" min="0" required><br>
 
-        <label for="upgrade-years">Device upgrade frequency (years):</label>
-        <input type="number" id="upgrade-years" min="1" required><br>
+            <label for="cloud-storage">Cloud storage used (GB):</label>
+            <input type="number" id="cloud-storage" name="cloud-storage" min="0" required><br>
 
-        <label for="recycle">Recycle old devices?</label>
-        <select id="recycle" required>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select><br>
+            <label for="upgrade-years">Device upgrade frequency (years):</label>
+            <input type="number" id="upgrade-years" name="upgrade-years" min="1" required><br>
 
-        <label for="smart-devices">Number of smart devices:</label>
-        <input type="number" id="smart-devices" min="0" required><br>
+            <label for="ai-usage">How many times do you use AI daily?</label>
+            <input type="number" id="ai-usage" name="ai-usage" min="0" required><br>
 
-        <label for="video-calls">Hours spent on video calls weekly:</label>
-        <input type="number" id="video-calls" min="0" required><br>
+            <label for="streaming-series">Hours of series on streaming platforms daily:</label>
+            <input type="number" id="streaming-series" name="streaming-series" min="0" required><br>
 
-        <label for="gaming-hours">Hours spent gaming weekly:</label>
-        <input type="number" id="gaming-hours" min="0" required><br>
+            <label for="social-media">Hours spent on social media daily:</label>
+            <input type="number" id="social-media" name="social-media" min="0" required><br>
 
-        <button type="button" onclick="calculateFootprint()">Calculate</button>
-    </form>
+            <label for="smart-devices">Number of smart devices:</label>
+            <input type="number" id="smart-devices" name="smart-devices" min="0" required><br>
 
-    <div id="result"></div>
+            <label for="video-calls">Hours spent on video calls weekly:</label>
+            <input type="number" id="video-calls" name="video-calls" min="0" required><br>
+
+            <label for="gaming-hours">Hours spent gaming weekly:</label>
+            <input type="number" id="gaming-hours" name="gaming-hours" min="0" required><br>
+
+            <button type="button" onclick="calculateFootprint()">Calculate</button>
+        </form>
+
+        <div id="result"></div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Green IT Project. All rights reserved. <a href="#">Learn More</a></p>
+    </footer>
 
     <script>
         function calculateFootprint() {
-            const deviceHours = parseInt(document.getElementById('device-hours').value);
-            const streamingHours = parseInt(document.getElementById('streaming-hours').value);
-            const emails = parseInt(document.getElementById('emails').value);
-            const cloudStorage = parseInt(document.getElementById('cloud-storage').value);
-            const upgradeYears = parseInt(document.getElementById('upgrade-years').value);
-            const recycle = document.getElementById('recycle').value;
-            const smartDevices = parseInt(document.getElementById('smart-devices').value);
-            const videoCalls = parseInt(document.getElementById('video-calls').value);
-            const gamingHours = parseInt(document.getElementById('gaming-hours').value);
+            const deviceHours = parseInt(document.getElementById('device-hours').value) || 0;
+            const streamingHours = parseInt(document.getElementById('streaming-hours').value) || 0;
+            const emails = parseInt(document.getElementById('emails').value) || 0;
+            const cloudStorage = parseInt(document.getElementById('cloud-storage').value) || 0;
+            const upgradeYears = parseInt(document.getElementById('upgrade-years').value) || 1;
+            const aiUsage = parseInt(document.getElementById('ai-usage').value) || 0;
+            const streamingSeries = parseInt(document.getElementById('streaming-series').value) || 0;
+            const socialMedia = parseInt(document.getElementById('social-media').value) || 0;
+            const smartDevices = parseInt(document.getElementById('smart-devices').value) || 0;
+            const videoCalls = parseInt(document.getElementById('video-calls').value) || 0;
+            const gamingHours = parseInt(document.getElementById('gaming-hours').value) || 0;
 
-            // CO₂ emissions factors (in kg CO₂ per unit)
-            const CO2_PER_DEVICE_HOUR = 0.05; // Average emissions per hour of device usage
-            const CO2_PER_STREAMING_HOUR = 0.3; // Streaming video (HD)
-            const CO2_PER_EMAIL = 0.004; // Sending/receiving an email
-            const CO2_PER_GB_CLOUD = 0.02; // Cloud storage per GB
-            const CO2_PER_SMART_DEVICE = 50; // Manufacturing and usage per smart device
-            const CO2_PER_VIDEO_CALL_HOUR = 0.1; // Video call per hour
-            const CO2_PER_GAMING_HOUR = 0.2; // Gaming per hour
-            const CO2_DEVICE_UPGRADE = 200; // Device manufacturing emissions
+            const CO2_PER_DEVICE_HOUR = 0.05;
+            const CO2_PER_STREAMING_HOUR = 0.3;
+            const CO2_PER_EMAIL = 0.004;
+            const CO2_PER_GB_CLOUD = 0.02;
+            const CO2_PER_SMART_DEVICE = 50;
+            const CO2_PER_VIDEO_CALL_HOUR = 0.1;
+            const CO2_PER_GAMING_HOUR = 0.2;
+            const CO2_PER_AI_USAGE = 0.02; // Approximate CO2 per AI usage
+            const CO2_PER_STREAMING_SERIES_HOUR = 0.35; // Higher for series
+            const CO2_PER_SOCIAL_MEDIA_HOUR = 0.1;
 
-            // Calculate footprint
             let footprint = 0;
-            footprint += deviceHours * 365 * CO2_PER_DEVICE_HOUR; // Daily device usage
-            footprint += streamingHours * 52 * CO2_PER_STREAMING_HOUR; // Weekly streaming
-            footprint += emails * 365 * CO2_PER_EMAIL; // Daily emails
-            footprint += cloudStorage * CO2_PER_GB_CLOUD; // Cloud storage
-            footprint += (CO2_DEVICE_UPGRADE / upgradeYears); // Device upgrade frequency
-            footprint += recycle === 'no' ? 20 : 0; // Recycling impact
-            footprint += smartDevices * CO2_PER_SMART_DEVICE; // Smart devices
-            footprint += videoCalls * 52 * CO2_PER_VIDEO_CALL_HOUR; // Weekly video calls
-            footprint += gamingHours * 52 * CO2_PER_GAMING_HOUR; // Weekly gaming
+            footprint += deviceHours * 365 * CO2_PER_DEVICE_HOUR;
+            footprint += streamingHours * 52 * CO2_PER_STREAMING_HOUR;
+            footprint += emails * 365 * CO2_PER_EMAIL;
+            footprint += cloudStorage * CO2_PER_GB_CLOUD;
+            footprint += CO2_PER_AI_USAGE * aiUsage * 365;
+            footprint += streamingSeries * 365 * CO2_PER_STREAMING_SERIES_HOUR;
+            footprint += socialMedia * 365 * CO2_PER_SOCIAL_MEDIA_HOUR;
+            footprint += CO2_PER_SMART_DEVICE * smartDevices;
+            footprint += videoCalls * 52 * CO2_PER_VIDEO_CALL_HOUR;
+            footprint += gamingHours * 52 * CO2_PER_GAMING_HOUR;
 
-            // Display result
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = `<h2>Your Annual Digital Footprint: ${footprint.toFixed(2)} kg CO₂</h2>`;
         }
