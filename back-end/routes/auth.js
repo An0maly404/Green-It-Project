@@ -74,6 +74,29 @@ export async function getPassword(username) {
     });
 }
 
+export async function getUsers() {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT id, username FROM users`;
+
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                console.error('Database error when retrieving users:', err.message);
+                reject(err);
+                return;
+            }
+
+            // If no users found, return empty array
+            if (!rows || rows.length === 0) {
+                resolve([]);
+                return;
+            }
+
+            // Return array of user objects
+            resolve(rows);
+        });
+    });
+}
+
 export async function addNewScore(userid, score) {
     return new Promise((resolve, reject) => {
         const sql = 'INSERT INTO scores (user_id, score) VALUES (?, ?)';

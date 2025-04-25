@@ -21,7 +21,8 @@ import {
     addNewUser,
     getPassword,
     addNewScore,
-    getScoresFromID
+    getScoresFromID,
+    getUsers
 } from "./routes/auth.js"
 
 
@@ -73,6 +74,21 @@ app.post("/api/user/create", async (req, res) => {
 
 app.post("/api/user/update", async (req, res) => {})
 app.post("/api/user/delete", async (req, res) => {})
+
+app.get("/api/users", async (req, res) => {
+    let users
+
+    await getUsers()
+        .then((result) => {
+            users = result
+        }).catch((err) => {
+            sendError(res, 500, err)
+        });
+
+    res.status(200).send({
+        "users": users
+    })
+})
 
 app.post("/api/login", async (req, res) => {
     const { username, password } = req.body
