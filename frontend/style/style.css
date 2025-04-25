@@ -14,15 +14,28 @@ body {
     flex-direction: column;
 }
 
+/* Header styles */
 header {
     background-color: #1b5e20;
-    padding: 1rem 0;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column; /* Stack logo and nav vertically */
+    align-items: center; /* Center align content horizontally */
+    text-align: center; /* Center align text */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header .logo {
+    font-size: 1.8rem; /* Slightly larger font for the logo */
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0.5rem; /* Add spacing between logo and nav */
 }
 
 nav {
     display: flex;
-    justify-content: center;
-    gap: 2rem;
+    gap: 1.5rem;
+    justify-content: center; /* Center navigation links */
 }
 
 nav a {
@@ -89,6 +102,26 @@ h1 {
 
 .login-form button:hover {
     background-color: #1b5e20;
+}
+
+/* Footer styles */
+footer {
+    background-color: #1b5e20;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    margin-top: auto;
+}
+
+footer a {
+    color: #a5d6a7;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 500px) {
