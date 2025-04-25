@@ -23,7 +23,7 @@ db.serialize(() => {
         CREATE TABLE IF NOT EXISTS scores (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
-            score INTEGER,
+            score DECIMAL,
             date_taken DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
         );`
@@ -74,3 +74,20 @@ export async function getPassword(username) {
     });
 }
 
+export async function addNewScore(userid, score) {
+    return new Promise((resolve, reject) => {
+        const sql = 'INSERT INTO scores (user_id, score) VALUES (?, ?)';
+
+        db.run(sql, [userid, score], function (err) {
+            if (err) {
+                console.error('Error inserting score:', err.message);
+                reject(err);
+                return;
+            }
+
+            // this.lastID contains the ID of the newly inserted row
+            console.log(`Score added with ID: ${this.lastID}`);
+            resolve(this.lastID);
+        });
+    });
+}

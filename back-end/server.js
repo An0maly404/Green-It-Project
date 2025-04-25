@@ -16,7 +16,8 @@ const { sign, verify } = jwtpkg;
 
 import {
     addNewUser,
-    getPassword
+    getPassword,
+    addNewScore
 } from "./routes/auth.js"
 
 
@@ -50,11 +51,11 @@ app.post("/api/user/create", async (req, res) => {
     let user_id = undefined
 
     await addNewUser(username, hashedpassword)
-    .then((result) => {
-        user_id = result
-    }).catch((err) => {    
-        sendError(res, 500, err)
-    });
+        .then((result) => {
+            user_id = result
+        }).catch((err) => {    
+            sendError(res, 500, err)
+        });
 
     if (user_id === undefined) return
 
@@ -80,11 +81,11 @@ app.post("/api/login", async (req, res) => {
     let passwordFromDB
 
     await getPassword(username)
-    .then((result) => {
-        passwordFromDB = result
-    }).catch((err) => {    
-        sendError(res, 500, err)
-    });
+        .then((result) => {
+            passwordFromDB = result
+        }).catch((err) => {    
+            sendError(res, 500, err)
+        });
 
     if (passwordFromDB === undefined) return;
     if (passwordFromDB === null) return;
@@ -101,7 +102,38 @@ app.post("/api/login", async (req, res) => {
     })
 })
 
-app.post("/api/:id/score", async (req, res) => {})
+app.post("/api/score", async (req, res) => {
+    const { score } = req.body
+    const user_token = req.headers.authorization
+    
+    if (!score) {
+        sendError(res, 400, "Missing score field.")
+        return
+    }
+
+    if (!user_token) {
+        sendError(res, 400, "You are not logged in.")
+        return
+    }
+
+    let user_id = verify(user_token, "ILoveGreenIT<3").user_id
+    let score_id
+
+    await addNewScore(user_id, score)
+        .then((result) => {
+            score_id = result
+        }).catch((err) => {
+            sendError(res, 500, err)
+        });
+
+    if (score_id === undefined) return
+
+    res.status(201).send({
+        "message": "Score has been added",
+        "id": score_id
+    })
+})
+
 app.get("/api/:id/score", async (req, res) => {})
 
 function sendError(res, statuscode, error) {
