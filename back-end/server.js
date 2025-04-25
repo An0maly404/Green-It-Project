@@ -1,11 +1,11 @@
 /*
-POST /api/user/create
-POST /api/user/update
+[x] POST /api/user/create
+[ ] POST /api/user/update
 
-POST /api/login
+[ ] POST /api/login
 
-POST /api/{id}/score
-GET  /api/{id}/score
+[ ] POST /api/{id}/score
+[ ] GET  /api/{id}/score
 */
 
 import express from "express";
@@ -15,7 +15,8 @@ const { sign, verify } = jwtpkg;
 
 
 import {
-    addNewUser
+    addNewUser,
+    getPassword
 } from "./routes/auth.js"
 
 
@@ -67,7 +68,38 @@ app.post("/api/user/create", async (req, res) => {
 
 app.post("/api/user/update", async (req, res) => {})
 
-app.post("/api/login", async (req, res) => {})
+app.post("/api/login", async (req, res) => {
+    const { username, password } = req.body
+
+    if (!username || !password) {
+        sendError(res, 400, "Missing username and/or password field.")
+        return
+    }
+
+    let hashedpwd = crypto.createHash('sha256').update(password).digest('hex')
+    let passwordFromDB
+
+    await getPassword(username)
+    .then((result) => {
+        passwordFromDB = result
+    }).catch((err) => {    
+        sendError(res, 500, err)
+    });
+
+    if (passwordFromDB === undefined) return;
+    if (passwordFromDB === null) return;
+
+    if (passwordFromDB.password !== hashedpwd) {
+        sendError(res, 403, "Wrong login information.")
+        return
+    }
+
+    const token = generateToken(passwordFromDB.id);
+
+    res.status(200).send({
+        "token": token
+    })
+})
 
 app.post("/api/:id/score", async (req, res) => {})
 app.get("/api/:id/score", async (req, res) => {})

@@ -47,3 +47,30 @@ export async function addNewUser(username, password) {
         });
     });
 }
+
+export async function getPassword(username) {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT id, password FROM users WHERE username = ?';
+
+        db.get(sql, [username], (err, row) => {
+            if (err) {
+                console.error('Database error:', err.message);
+                reject(err);
+                return;
+            }
+
+            if (!row) {
+                // No user found with this username
+                reject("User doesn't exist");
+                return;
+            }
+
+            // Return the user ID and password
+            resolve({
+                id: row.id,
+                password: row.password
+            });
+        });
+    });
+}
+
