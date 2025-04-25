@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green IT</title>
+    <title>Green IT - Login</title>
     <link rel="stylesheet" href="../style/style.css">
 </head>
 <body>
@@ -14,6 +14,19 @@
             <a href="results.html">Results</a>
         </nav>
     </header>
-    <h1>Green IT</h1>
+
+    <main>
+        <h1>Welcome to the Green IT Energy Questionnaire</h1>
+
+        <form action="questions.html" method="get" class="login-form">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+    </main>
 </body>
 </html>
