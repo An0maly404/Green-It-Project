@@ -1,14 +1,14 @@
 /*
 [x] POST /api/user/create
-[ ] POST /api/user/update
-[ ] POST /api/user/delete
+[x] POST /api/user/update
+[x] POST /api/user/delete
 
-[ ] GET /api/users
+[x] GET /api/users
 
 [x] POST /api/login
 
 [x] POST /api/{id}/score
-[ ] GET  /api/{id}/score
+[x] GET  /api/{id}/score
 */
 
 import express from "express";
@@ -22,7 +22,9 @@ import {
     getPassword,
     addNewScore,
     getScoresFromID,
-    getUsers
+    getUsers,
+    updateUser,
+    deleteUser
 } from "./routes/auth.js"
 
 
@@ -72,8 +74,73 @@ app.post("/api/user/create", async (req, res) => {
     })
 })
 
-app.post("/api/user/update", async (req, res) => {})
-app.post("/api/user/delete", async (req, res) => {})
+app.post("/api/user/update", async (req, res) => {
+    const { username, password } = req.body
+    const user_token = req.headers.authorization
+
+    if (!user_token) {
+        sendError(res, 400, "You are not logged in.")
+        return
+    }
+
+    if (!username && !password) {
+        sendError(res, 400, "At least one field should be filled out.")
+        return
+    }
+
+    let hashedpassword = ""
+    if (password) {
+        if (password.length < 8) {
+            sendError(res, 400, "Password should be 8 characters or more.")
+            return
+        }
+        
+        let hashedpassword = crypto.createHash('sha256').update(password).digest('hex')
+    }
+
+    const user_id = verify(user_token, "ILoveGreenIT<3").user_id
+    let r
+
+    await updateUser(user_id, username, hashedpassword)
+        .then((result) => {
+            r = true
+        }).catch((err) => {
+            sendError(res, 500, err)
+            return
+        });
+
+    if (!r) return
+
+    res.status(200).send({
+        'message': "User has been updated"
+    })
+})
+
+app.post("/api/user/delete", async (req, res) => {
+    const user_token = req.headers.authorization
+
+    if (!user_token) {
+        sendError(res, 400, "You are not logged in.")
+        return
+    }
+
+    const user_id = verify(user_token, "ILoveGreenIT<3").user_id
+    let r
+
+    await deleteUser(user_id)
+        .then((result) => {
+            r = true
+        }).catch((err) => {
+            sendError(res, 500, err)
+            return
+        });
+
+    if (!r) return
+
+    res.status(200).send({
+        "message": "User has been deleted."
+    })
+})
 
 app.get("/api/users", async (req, res) => {
     let users

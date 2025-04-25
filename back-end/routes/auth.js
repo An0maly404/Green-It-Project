@@ -1,5 +1,4 @@
 import sqlite3 from 'sqlite3'
-// import fs from 'fs'
 
 const db = new sqlite3.Database('../users.db', (err) => {
     if (err) {
@@ -43,6 +42,54 @@ export async function addNewUser(username, password) {
 
             // this.lastID contains the ID of the newly inserted row
             console.log(`User added with ID: ${this.lastID}`);
+            resolve(this.lastID);
+        });
+    });
+}
+
+export async function updateUser(userid, username = '', password = '') {
+    return new Promise((resolve, reject) => {
+        const sql = `
+        UPDATE users
+        ${username ? 'SET username = ?' : ''} ${username && password ? ',' : ''}
+        ${password ? 'SET password = ?' : ''}
+        WHERE id = ?
+        `;
+
+        console.log(sql)
+
+        let args = []
+        if (username) args.push(username)
+        if (password) args.push(password)
+        args.push(userid)
+
+        db.run(sql, args, function (err) {
+            if (err) {
+                console.error('Error updating user:', err.message);
+                reject(err);
+                return;
+            }
+
+            // this.lastID contains the ID of the updated row
+            console.log(`User updated with ID: ${this.lastID}`);
+            resolve(this.lastID);
+        });
+    });
+}
+
+export async function deleteUser(userid) {
+    return new Promise((resolve, reject) => {
+        const sql = `DELETE FROM users WHERE id = ?`;
+
+        db.run(sql, [userid], function (err) {
+            if (err) {
+                console.error('Error deleting user:', err.message);
+                reject(err);
+                return;
+            }
+
+            // this.lastID contains the ID of the deleted row
+            console.log(`User deleted with ID: ${this.lastID}`);
             resolve(this.lastID);
         });
     });
