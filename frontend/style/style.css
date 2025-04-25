@@ -1,3 +1,4 @@
+/* Reset + base */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -83,6 +84,7 @@ h1 {
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-top: 5%;
 }
 
 .login-form button:hover {
