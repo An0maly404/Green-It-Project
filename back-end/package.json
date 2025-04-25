@@ -12,6 +12,8 @@
   "description": "",
   "type": "module",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "node-jsonwebtoken": "^0.0.1",
+    "sqlite3": "^5.1.7"
   }
 }
