@@ -23,7 +23,6 @@ const app = express()
 const PORT = 1234
 
 app.use(express.json());
-
 app.use((req, res, next) => {
     console.log('%s %s', req.method, req.url)
     next()
@@ -52,11 +51,8 @@ app.post("/api/user/create", async (req, res) => {
     await addNewUser(username, hashedpassword)
     .then((result) => {
         user_id = result
-    }).catch((err) => {
-        if (err.message === "User already exist")
-            sendError(res, 403, err)
-        else
-            sendError(res, 500, err)
+    }).catch((err) => {    
+        sendError(res, 500, err)
     });
 
     if (user_id === undefined) return
@@ -67,7 +63,6 @@ app.post("/api/user/create", async (req, res) => {
         "message": "New user created",
         "token": token
     })
-
 })
 
 app.post("/api/user/update", async (req, res) => {})
