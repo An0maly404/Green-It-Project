@@ -10,9 +10,8 @@
 <header>
   <div class="logo">Green IT</div>
   <nav>
-    <a href="main_login.html">Home</a>
-    <a href="questions.html">Questions</a>
-    <a href="results.html">Results</a>
+    <a href="main_login.html">Login</a>
+    <a href="register.html">Register</a>
   </nav>
 </header>
 
@@ -39,38 +38,26 @@
   <p>&copy; 2025 Green IT Project for Efrei. All rights reserved.</p>
 </footer>
 
-<script>
+<script type="module">
+  import { login } from '../api.js';
+
   const form = document.getElementById('login-form');
 
   form.addEventListener('submit', async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
     try {
-      const response = await fetch('http://localhost:1234/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-
+      const data = await login(username, password);
       console.log('Login successful, token:', data.token);
-      localStorage.setItem('token', data.token);
       window.location.href = 'questions.html';
-
     } catch (error) {
       console.error('Login failed:', error.message);
       alert('Login failed: ' + error.message);
     }
   });
 </script>
-
 </body>
 </html>

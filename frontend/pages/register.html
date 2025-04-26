@@ -9,9 +9,9 @@
 <body>
     <header>
         <nav>
-            <a href="main_login.html">Home</a>
-            <a href="questions.html">Questions</a>
-            <a href="results.html">Results</a>
+            <a href="main_login.html">Login</a>
+            <a href="register.html">Register</a>
+            
         </nav>
     </header>
 
@@ -51,11 +51,8 @@
 
                 console.log(response.data);
 
-                
-                localStorage.setItem('token', response.data.token);
-
-                // Redirige vers questions.html 
-                window.location.href = "questions.html";
+                // Redirige vers le login
+                window.location.href = "main_login.html";
             } catch (error) {
                 alert('Registration failed: ' + error.response.data.message);
                 console.error(error);

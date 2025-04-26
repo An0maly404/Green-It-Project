@@ -10,7 +10,6 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Erreur de connexion à la base de données :', err.message);
     } else {
         console.log('Connecté à la base de données SQLite :', dbPath);
-        db.run("PRAGMA journal_mode = WAL;");
         console.log("Utilisation de la database ici :", dbPath);
 
     }

@@ -10,7 +10,7 @@
     <header>
         <div class="logo">Green IT</div>
         <nav>
-            <a href="main_login.html">Home</a>
+            <a href="main_login.html" onclick="logoutUser()">Log Out</a>
             <a href="questions.html">Questions</a>
             <a href="results.html">Results</a>
         </nav>
@@ -63,8 +63,17 @@
         <p>&copy; 2025 Green IT Project for Efrei. All rights reserved. By Ian ROUVRAIS, Antoine LENOGUES, Antoine MEUNIER, Antoine IGLESIAS-TALLON, Nassim AININE</p>
     </footer>
 
-    <script>
-        function calculateFootprint() {
+    <script type="module">
+        import { addScore,logoutUser } from '../api.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert("You must be logged in to access the quiz.");
+                window.location.href = "main_login.html";
+            }
+        });
+    
+        async function calculateFootprint() {
             const deviceHours = parseInt(document.getElementById('device-hours').value) || 0;
             const streamingHours = parseInt(document.getElementById('streaming-hours').value) || 0;
             const emails = parseInt(document.getElementById('emails').value) || 0;
@@ -76,7 +85,7 @@
             const smartDevices = parseInt(document.getElementById('smart-devices').value) || 0;
             const videoCalls = parseInt(document.getElementById('video-calls').value) || 0;
             const gamingHours = parseInt(document.getElementById('gaming-hours').value) || 0;
-
+    
             const CO2_PER_DEVICE_HOUR = 0.05;
             const CO2_PER_STREAMING_HOUR = 0.3;
             const CO2_PER_EMAIL = 0.004;
@@ -84,10 +93,10 @@
             const CO2_PER_SMART_DEVICE = 50;
             const CO2_PER_VIDEO_CALL_HOUR = 0.1;
             const CO2_PER_GAMING_HOUR = 0.2;
-            const CO2_PER_AI_USAGE = 0.02; // Approximate CO2 per AI usage
-            const CO2_PER_STREAMING_SERIES_HOUR = 0.35; // Higher for series
+            const CO2_PER_AI_USAGE = 0.02;
+            const CO2_PER_STREAMING_SERIES_HOUR = 0.35;
             const CO2_PER_SOCIAL_MEDIA_HOUR = 0.1;
-
+    
             let footprint = 0;
             footprint += deviceHours * 365 * CO2_PER_DEVICE_HOUR;
             footprint += streamingHours * 52 * CO2_PER_STREAMING_HOUR;
@@ -99,10 +108,18 @@
             footprint += CO2_PER_SMART_DEVICE * smartDevices;
             footprint += videoCalls * 52 * CO2_PER_VIDEO_CALL_HOUR;
             footprint += gamingHours * 52 * CO2_PER_GAMING_HOUR;
-
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = `<h2>Your Annual Digital Footprint: ${footprint.toFixed(2)} kg CO₂</h2>`;
+            footprint = parseFloat(footprint.toFixed(2));
+    
+            try {
+                await addScore(footprint);
+                localStorage.setItem('lastScore', footprint); // local save
+                window.location.href = 'results.html'; //  results page redirect
+            } catch (error) {
+                console.error('Erreur lors de l\'enregistrement du score:', error);
+                alert('Erreur lors de l\'enregistrement du score.');
+            }
         }
+        window.calculateFootprint = calculateFootprint;
     </script>
 </body>
 </html>

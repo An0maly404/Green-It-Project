@@ -10,7 +10,7 @@
     <header>
         <div class="logo">Green IT</div>
         <nav>
-            <a href="main_login.html">Home</a>
+            <a href="main_login.html" onclick="logoutUser()">Log Out</a>
             <a href="questions.html">Questions</a>
             <a href="results.html">Results</a>
         </nav>
@@ -24,5 +24,59 @@
     <footer>
         <p>&copy; 2025 Green IT Project for Efrei. All rights reserved. By Ian ROUVRAIS, Antoine LENOGUES, Antoine MEUNIER, Antoine IGLESIAS-TALLON, Nassim AININE</p>
     </footer>
+    <script type="module">
+        import { getScores,parseJwt }  from '../api.js';
+      
+        async function loadResults() {
+          const main    = document.querySelector('main');
+          const token   = localStorage.getItem('token');
+          const payload = token && parseJwt(token);
+          const userId  = payload?.user_id;
+          const username= localStorage.getItem('username');
+      
+          if (!token || !userId) {
+            main.innerHTML = `<h1>Results</h1><p>Please login first.</p>`;
+            return;
+          }
+      
+          const lastScore = localStorage.getItem('lastScore');
+          let html = `
+            <h1>Results</h1>
+            <h2>Welcome, <span style="color:green">${username}</span>!</h2>
+            ${ lastScore
+               ? `<p><strong>Last calculated footprint:</strong> ${lastScore} kg CO₂</p>`
+               : `<p>No footprint calculated yet.</p>`
+            }
+            <h3>All past scores:</h3>
+          `;
+      
+          // Fetch all scores for this user
+          try {
+            const scores = await getScores(userId);
+            if (!scores.length) {
+              html += `<p>No past scores found.</p>`;
+            } else {
+              // sort by date desc
+              scores.sort((a,b)=>new Date(b.date_taken) - new Date(a.date_taken));
+              html += `<ul style="list-style:none;padding:0;">`;
+              for (const {score,date_taken} of scores) {
+                html += `
+                  <li style="background:#eef;margin:8px 0;padding:8px;border-radius:6px">
+                    <strong>${new Date(date_taken).toLocaleString()}</strong>
+                    — ${score.toFixed(2)} kg CO₂
+                  </li>
+                `;
+              }
+              html += `</ul>`;
+            }
+            main.innerHTML = html;
+          } catch(e) {
+            console.error(e);
+            main.innerHTML += `<p>Error loading your scores.</p>`;
+          }
+        }
+      
+        loadResults();
+      </script>      
 </body>
 </html>

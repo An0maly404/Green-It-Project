@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios from 'https://cdn.jsdelivr.net/npm/axios@1.6.8/+esm';
+
 
 const API_BASE_URL = 'http://localhost:1234/api';
 
@@ -17,14 +18,22 @@ apiClient.interceptors.request.use((config) => {
 export async function createUser(username, password) {
   const response = await apiClient.post('/user/create', { username, password });
   localStorage.setItem('token', response.data.token);
+  localStorage.setItem('username', username); 
   return response.data;
 }
 
 export async function login(username, password) {
   const response = await apiClient.post('/login', { username, password });
   localStorage.setItem('token', response.data.token);
+  localStorage.setItem('username', username); 
   return response.data;
 }
+
+export function logoutUser() {
+  localStorage.clear();
+  window.location.href = 'main_login.html';
+}
+
 
 export async function updateUser(username = null, password = null) {
   const data = {};
@@ -58,4 +67,19 @@ export async function getScores(userId) {
 // 🚪 Déconnexion (juste local)
 export function logout() {
   localStorage.removeItem('token');
+}
+
+export function parseJwt (token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64    = atob(base64Url.replace(/-/g, '+').replace(/_/g, '/'));
+    const json      = decodeURIComponent(
+      base64.split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(json);
+  } catch (e) {
+    return null;
+  }
 }
