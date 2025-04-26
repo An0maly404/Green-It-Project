@@ -16,9 +16,9 @@
     </header>
 
     <main>
-        <h1>New Here ? Create an Account ! </h1>
+        <h1>New Here? Create an Account!</h1>
 
-        <form action="questions.html" method="get" class="login-form">
+        <form id="register-form" class="login-form">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" required>
 
@@ -30,7 +30,37 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 Green IT Project for Efrei. All rights reserved. By Ian ROUVRAIS, Antoine LENOGUES, Antoine MEUNIER, Antoine IGLESIAS-TALLON, Nassim AININE</p>
-    </footer>    
+        <p>&copy; 2025 Green IT Project for Efrei. All rights reserved.</p>
+    </footer>  
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const form = document.getElementById('register-form');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await axios.post('http://localhost:1234/api/user/create', {
+                    username: username,
+                    password: password
+                });
+
+                console.log(response.data);
+
+                
+                localStorage.setItem('token', response.data.token);
+
+                // Redirige vers questions.html 
+                window.location.href = "questions.html";
+            } catch (error) {
+                alert('Registration failed: ' + error.response.data.message);
+                console.error(error);
+            }
+        });
+    </script>
 </body>
 </html>

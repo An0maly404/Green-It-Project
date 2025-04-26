@@ -12,25 +12,25 @@
 */
 
 import express from "express";
+import cors from "cors";              // ← importer cors
 import crypto from 'crypto'
 import jwtpkg from 'node-jsonwebtoken';
 const { sign, verify } = jwtpkg;
 
-
 import {
-    addNewUser,
-    getPassword,
-    addNewScore,
-    getScoresFromID,
-    getUsers,
-    updateUser,
-    deleteUser
-} from "./routes/auth.js"
-
+  addNewUser,
+  getPassword,
+  addNewScore,
+  getScoresFromID,
+  getUsers,
+  updateUser,
+  deleteUser
+} from "./auth.js"
 
 const app = express()
 const PORT = 1234
 
+app.use(cors())
 app.use(express.json());
 app.use((req, res, next) => {
     console.log('%s %s', req.method, req.url)

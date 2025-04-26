@@ -1,10 +1,18 @@
-import sqlite3 from 'sqlite3'
+import sqlite3 from 'sqlite3';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const db = new sqlite3.Database('../users.db', (err) => {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname  = path.dirname(__filename);
+const dbPath = path.join(__dirname, 'users.db');
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
-        console.error('Erreur de connexion à la base de données:', err.message);
+        console.error('Erreur de connexion à la base de données :', err.message);
     } else {
-        console.log('Connecté à la base de données SQLite.');
+        console.log('Connecté à la base de données SQLite :', dbPath);
+        db.run("PRAGMA journal_mode = WAL;");
+        console.log("Utilisation de la database ici :", dbPath);
+
     }
 });
 
@@ -27,6 +35,17 @@ db.serialize(() => {
             FOREIGN KEY (user_id) REFERENCES users(id)
         );`
     );
+    db.all(
+        "SELECT name FROM sqlite_master WHERE type='table'",
+        [],
+        (err, rows) => {
+          if (err) {
+            console.error('Erreur listant les tables :', err.message);
+          } else {
+            console.log('Tables dans la DB :', rows.map(r => r.name));
+          }
+        }
+      );
 });
 
 export async function addNewUser(username, password) {
@@ -42,6 +61,14 @@ export async function addNewUser(username, password) {
 
             // this.lastID contains the ID of the newly inserted row
             console.log(`User added with ID: ${this.lastID}`);
+            console.log('—> Après INSERT, on relance un SELECT pour vérifier :');
+            db.all('SELECT id, username FROM users', [], (err, rows) => {
+              if (err) {
+                console.error('Erreur SELECT après INSERT :', err.message);
+              } else {
+                console.log('Contenu de users après INSERT :', rows);
+              }
+            });            
             resolve(this.lastID);
         });
     });
