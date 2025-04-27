@@ -44,7 +44,7 @@
             const password = document.getElementById('password').value;
 
             try {
-                const response = await axios.post('http://localhost:1234/api/user/create', {
+                const response = await axios.post('http://api/user/create', {
                     username: username,
                     password: password
                 });
