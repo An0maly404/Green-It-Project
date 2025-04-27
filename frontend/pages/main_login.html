@@ -39,7 +39,7 @@
 </footer>
 
 <script type="module">
-  import { login } from '../api.js';
+  import { login, parseJwt } from '../api.js';
 
   const form = document.getElementById('login-form');
 
@@ -51,8 +51,14 @@
 
     try {
       const data = await login(username, password);
+      const payload = parseJwt(data.token);
+      console.log(payload);
       console.log('Login successful, token:', data.token);
-      window.location.href = 'questions.html';
+      if (payload.role === 'admin') {
+        window.location.href = 'admin_dashboard.html';
+      } else {
+        window.location.href = 'questions.html';
+      }
     } catch (error) {
       console.error('Login failed:', error.message);
       alert('Login failed: ' + error.message);

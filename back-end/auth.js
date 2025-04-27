@@ -1,6 +1,7 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -11,20 +12,18 @@ const db = new sqlite3.Database(dbPath, (err) => {
     } else {
         console.log('Connecté à la base de données SQLite :', dbPath);
         console.log("Utilisation de la database ici :", dbPath);
-
     }
-});
+    });
 
-// Création de la table users
 db.serialize(() => {
     db.run(`
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL
-        );`
-    );
-
+            password TEXT NOT NULL,
+            role TEXT DEFAULT 'user'
+        );
+    `);
     db.run(`
         CREATE TABLE IF NOT EXISTS scores (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,186 +31,88 @@ db.serialize(() => {
             score DECIMAL,
             date_taken DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
-        );`
-    );
-    db.all(
-        "SELECT name FROM sqlite_master WHERE type='table'",
-        [],
-        (err, rows) => {
-          if (err) {
-            console.error('Erreur listant les tables :', err.message);
-          } else {
-            console.log('Tables dans la DB :', rows.map(r => r.name));
-          }
-        }
-      );
+        );
+    `);
 });
 
 export async function addNewUser(username, password) {
     return new Promise((resolve, reject) => {
-        const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
-
-        db.run(sql, [username, password], function (err) {
-            if (err) {
-                console.error('Error inserting user:', err.message);
-                reject(err);
-                return;
-            }
-
-            // this.lastID contains the ID of the newly inserted row
-            console.log(`User added with ID: ${this.lastID}`);
-            console.log('—> Après INSERT, on relance un SELECT pour vérifier :');
-            db.all('SELECT id, username FROM users', [], (err, rows) => {
-              if (err) {
-                console.error('Erreur SELECT après INSERT :', err.message);
-              } else {
-                console.log('Contenu de users après INSERT :', rows);
-              }
-            });            
-            resolve(this.lastID);
-        });
-    });
-}
-
-export async function updateUser(userid, username = '', password = '') {
-    return new Promise((resolve, reject) => {
-        const sql = `
-        UPDATE users
-        ${username ? 'SET username = ?' : ''} ${username && password ? ',' : ''}
-        ${password ? 'SET password = ?' : ''}
-        WHERE id = ?
-        `;
-
-        console.log(sql)
-
-        let args = []
-        if (username) args.push(username)
-        if (password) args.push(password)
-        args.push(userid)
-
-        db.run(sql, args, function (err) {
-            if (err) {
-                console.error('Error updating user:', err.message);
-                reject(err);
-                return;
-            }
-
-            // this.lastID contains the ID of the updated row
-            console.log(`User updated with ID: ${this.lastID}`);
-            resolve(this.lastID);
-        });
-    });
-}
-
-export async function deleteUser(userid) {
-    return new Promise((resolve, reject) => {
-        const sql = `DELETE FROM users WHERE id = ?`;
-
-        db.run(sql, [userid], function (err) {
-            if (err) {
-                console.error('Error deleting user:', err.message);
-                reject(err);
-                return;
-            }
-
-            // this.lastID contains the ID of the deleted row
-            console.log(`User deleted with ID: ${this.lastID}`);
-            resolve(this.lastID);
+        const sql = 'INSERT INTO users (username, password, role) VALUES (?, ?, ?)';
+        db.run(sql, [username, password, 'user'], function(err) {
+            if (err) reject(err);
+            else resolve(this.lastID);
         });
     });
 }
 
 export async function getPassword(username) {
     return new Promise((resolve, reject) => {
-        const sql = 'SELECT id, password FROM users WHERE username = ?';
-
+        const sql = 'SELECT id, password, role FROM users WHERE username = ?';
         db.get(sql, [username], (err, row) => {
-            if (err) {
-                console.error('Database error:', err.message);
-                reject(err);
-                return;
-            }
-
-            if (!row) {
-                // No user found with this username
-                reject("User doesn't exist");
-                return;
-            }
-
-            // Return the user ID and password
-            resolve({
-                id: row.id,
-                password: row.password
-            });
+            if (err) return reject(err);
+            if (!row) return reject("User doesn't exist");
+            resolve({ id: row.id, password: row.password, role: row.role });
         });
     });
 }
 
 export async function getUsers() {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT id, username FROM users`;
-
+        const sql = 'SELECT id, username, role FROM users';
         db.all(sql, [], (err, rows) => {
-            if (err) {
-                console.error('Database error when retrieving users:', err.message);
-                reject(err);
-                return;
-            }
-
-            // If no users found, return empty array
-            if (!rows || rows.length === 0) {
-                resolve([]);
-                return;
-            }
-
-            // Return array of user objects
-            resolve(rows);
+            if (err) reject(err);
+            else resolve(rows);
         });
     });
 }
 
-export async function addNewScore(userid, score) {
+export async function updateUser(user_id, username, password) {
+    return new Promise((resolve, reject) => {
+        const sql = 'UPDATE users SET username = ?, password = ? WHERE id = ?';
+        db.run(sql, [username, password, user_id], function(err) {
+            if (err) reject(err);
+            else resolve(true);
+        });
+    });
+}
+
+export async function deleteUser(user_id) {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM users WHERE id = ?';
+        db.run(sql, [user_id], function(err) {
+            if (err) reject(err);
+            else resolve(true);
+        });
+    });
+}
+
+export async function addNewScore(user_id, score) {
     return new Promise((resolve, reject) => {
         const sql = 'INSERT INTO scores (user_id, score) VALUES (?, ?)';
-
-        db.run(sql, [userid, score], function (err) {
-            if (err) {
-                console.error('Error inserting score:', err.message);
-                reject(err);
-                return;
-            }
-
-            // this.lastID contains the ID of the newly inserted row
-            console.log(`Score added with ID: ${this.lastID}`);
-            resolve(this.lastID);
+        db.run(sql, [user_id, score], function(err) {
+            if (err) reject(err);
+            else resolve(this.lastID);
         });
     });
 }
 
-export async function getScoresFromID(userId) {
+export async function getScoresFromID(user_id) {
     return new Promise((resolve, reject) => {
-        const sql = `
-            SELECT id, score, date_taken 
-            FROM scores 
-            WHERE user_id = ? 
-            ORDER BY date_taken DESC
-        `;
-
-        db.all(sql, [userId], (err, rows) => {
-            if (err) {
-                console.error('Database error when retrieving scores:', err.message);
-                reject(err);
-                return;
-            }
-
-            // If no scores found, return empty array
-            if (!rows || rows.length === 0) {
-                resolve([]);
-                return;
-            }
-
-            // Return array of score objects
-            resolve(rows);
+        const sql = 'SELECT id, score, date_taken FROM scores WHERE user_id = ? ORDER BY date_taken DESC';
+        db.all(sql, [user_id], (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
         });
+    });
+}
+
+export function createAdminIfNotExists() {
+    const username = 'admin';
+    const password = 'admin';
+    const hashed = crypto.createHash('sha256').update(password).digest('hex');
+    db.get('SELECT 1 FROM users WHERE username = ?', [username], (err, row) => {
+        if (!err && !row) {
+            db.run('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', [username, hashed, 'admin']);
+        }
     });
 }
