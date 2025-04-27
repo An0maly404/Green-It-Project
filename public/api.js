@@ -1,6 +1,7 @@
 import axios from 'https://cdn.jsdelivr.net/npm/axios@1.6.8/+esm';
 
-const API_BASE_URL = 'https://green-it-backend.vercel.app/api';
+// const API_BASE_URL = 'https://green-it-backend.vercel.app/api';
+const API_BASE_URL = 'http://localhost:1234/api';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -94,7 +95,7 @@ export function parseJwt (token) {
   }
 }
 
-const PORT = process.env.PORT || 1234;
-app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`);
-});
+// const PORT = process.env.PORT || 1234;
+// app.listen(PORT, () => {
+//     console.log(`Listening on port ${PORT}`);
+// });
