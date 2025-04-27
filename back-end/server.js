@@ -82,10 +82,15 @@ app.get("/api/users", async (req, res) => {
 app.post("/api/user/update", async (req, res) => {
     const token = req.headers.authorization;
     if (!token) return sendError(res, 400, "Not logged in.");
-    const { username, password } = req.body;
+
+    const { username, password, user_id } = req.body;
     if (!username && !password) return sendError(res, 400, "No fields to update.");
 
-    const { user_id } = verify(token, "ILoveGreenIT<3");
+    console.log(username, password)
+
+    // const { user_id } = verify(token, "ILoveGreenIT<3");
+    if (user_id === 1) return sendError(res, 500, "Can't update admin.");
+
     const hash = password
         ? crypto.createHash('sha256').update(password).digest('hex')
         : undefined;
@@ -101,7 +106,11 @@ app.post("/api/user/update", async (req, res) => {
 app.post("/api/user/delete", async (req, res) => {
     const token = req.headers.authorization;
     if (!token) return sendError(res, 400, "Not logged in.");
-    const { user_id } = verify(token, "ILoveGreenIT<3");
+
+    const { user_id } = req.body;
+    // const { user_id } = verify(token, "ILoveGreenIT<3");
+
+    if (user_id === 1) return sendError(res, 500, "Can't delete admin.");
 
     try {
         await deleteUser(user_id);

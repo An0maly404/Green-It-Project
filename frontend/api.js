@@ -17,8 +17,8 @@ apiClient.interceptors.request.use((config) => {
 
 export async function createUser(username, password) {
   const response = await apiClient.post('/user/create', { username, password });
-  localStorage.setItem('token', response.data.token);
-  localStorage.setItem('username', username); 
+  // localStorage.setItem('token', response.data.token);
+  // localStorage.setItem('username', username); 
   return response.data;
 }
 
@@ -35,17 +35,24 @@ export function logoutUser() {
 }
 
 
-export async function updateUser(username = null, password = null) {
+export async function updateUser(username = null, password = null, userId = 0) {
   const data = {};
   if (username) data.username = username;
   if (password) data.password = password;
+  if (userId) data.user_id = userId;
   const response = await apiClient.post('/user/update', data);
   return response.data;
 }
 
-export async function deleteUser() {
-  const response = await apiClient.post('/user/delete');
-  localStorage.removeItem('token');
+export async function deleteUser(user_id) {
+  if (user_id === 1) return
+
+  const data = {};
+  if (user_id) data.user_id = user_id;
+  const response = await apiClient.post('/user/delete', data);
+
+  // localStorage.removeItem('token');
+
   return response.data;
 }
 

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname  = path.dirname(__filename);
+const __dirname = path.dirname(__filename);
 const dbPath = path.join(__dirname, 'users.db');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
@@ -13,7 +13,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.log('Connecté à la base de données SQLite :', dbPath);
         console.log("Utilisation de la database ici :", dbPath);
     }
-    });
+});
 
 db.serialize(() => {
     db.run(`
@@ -38,7 +38,7 @@ db.serialize(() => {
 export async function addNewUser(username, password) {
     return new Promise((resolve, reject) => {
         const sql = 'INSERT INTO users (username, password, role) VALUES (?, ?, ?)';
-        db.run(sql, [username, password, 'user'], function(err) {
+        db.run(sql, [username, password, 'user'], function (err) {
             if (err) reject(err);
             else resolve(this.lastID);
         });
@@ -66,12 +66,32 @@ export async function getUsers() {
     });
 }
 
-export async function updateUser(user_id, username, password) {
+export async function updateUser(userid, username = '', password = '') {
     return new Promise((resolve, reject) => {
-        const sql = 'UPDATE users SET username = ?, password = ? WHERE id = ?';
-        db.run(sql, [username, password, user_id], function(err) {
-            if (err) reject(err);
-            else resolve(true);
+        const sql = `
+        UPDATE users
+        ${username ? 'SET username = ?' : ''} ${username && password ? ',' : ''}
+        ${password ? 'SET password = ?' : ''}
+        WHERE id = ?
+        `;
+
+        console.log(sql)
+
+        let args = []
+        if (username) args.push(username)
+        if (password) args.push(password)
+        args.push(userid)
+
+        db.run(sql, args, function (err) {
+            if (err) {
+                console.error('Error updating user:', err.message);
+                reject(err);
+                return;
+            }
+
+            // this.lastID contains the ID of the updated row
+            console.log(`User updated with ID: ${this.lastID}`);
+            resolve(this.lastID);
         });
     });
 }
@@ -79,7 +99,7 @@ export async function updateUser(user_id, username, password) {
 export async function deleteUser(user_id) {
     return new Promise((resolve, reject) => {
         const sql = 'DELETE FROM users WHERE id = ?';
-        db.run(sql, [user_id], function(err) {
+        db.run(sql, [user_id], function (err) {
             if (err) reject(err);
             else resolve(true);
         });
@@ -89,7 +109,7 @@ export async function deleteUser(user_id) {
 export async function addNewScore(user_id, score) {
     return new Promise((resolve, reject) => {
         const sql = 'INSERT INTO scores (user_id, score) VALUES (?, ?)';
-        db.run(sql, [user_id, score], function(err) {
+        db.run(sql, [user_id, score], function (err) {
             if (err) reject(err);
             else resolve(this.lastID);
         });

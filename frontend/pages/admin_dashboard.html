@@ -62,6 +62,8 @@
       }
 
       users.forEach(user => {
+        if (user.username === "admin") return
+
         const userDiv = document.createElement('div');
         userDiv.style.border = '1px solid #ccc';
         userDiv.style.padding = '10px';
@@ -86,7 +88,7 @@
 
   window.handleUpdate = async function(userId) {
     const passwordInput = document.getElementById(`password-${userId}`);
-
+    
     const newPassword = passwordInput.value.trim();
 
     if (!newPassword) {
@@ -95,7 +97,7 @@
     }
 
     try {
-      await updateUser(userId, null, newPassword);
+      await updateUser(null, newPassword, userId);
       alert('User updated successfully!');
       loadUsers(); 
     } catch (error) {
