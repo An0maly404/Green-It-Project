@@ -1,0 +1,12 @@
+{
+    "projects": [
+      {
+        "framework": "static",
+        "outputDirectory": "frontend/pages"
+      }
+    ],
+    "rewrites": [
+      { "source": "/", "destination": "/index.html" }
+    ]
+  }
+  
