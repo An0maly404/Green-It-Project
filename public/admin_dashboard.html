@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - Green IT</title>
-  <link rel="stylesheet" href="../style/style.css">
+  <link rel="stylesheet" href="./style/style.css">
 </head>
 <body>
 <header>
@@ -39,7 +39,7 @@
 </footer>
 
 <script type="module">
-  import { getUsers, createUser, updateUser, deleteUser, logoutUser, getToken, parseJwt } from '../api.js';
+  import { getUsers, createUser, updateUser, deleteUser, logoutUser, getToken, parseJwt } from './api.js';
   const jwt = window.jwt;
 
   // Get token
