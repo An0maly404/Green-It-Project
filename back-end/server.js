@@ -262,5 +262,5 @@ function generateToken(user_id) {
 }
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '../frontend/pages/main_login.html');
+    res.sendFile(__dirname + '../frontend/pages/index.html');
 });
