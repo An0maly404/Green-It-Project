@@ -146,3 +146,5 @@ app.get("/api/:id/score", async (req, res) => {
         sendError(res, 500, e.message);
     }
 });
+
+export default app;
