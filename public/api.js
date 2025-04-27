@@ -1,7 +1,6 @@
 import axios from 'https://cdn.jsdelivr.net/npm/axios@1.6.8/+esm';
 
-
-const API_BASE_URL = './api';
+const API_BASE_URL = 'https://green-it-project-eight.vercel.app/api';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
