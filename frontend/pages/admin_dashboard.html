@@ -39,7 +39,16 @@
 </footer>
 
 <script type="module">
-  import { getUsers, createUser, updateUser, deleteUser, logoutUser } from '../api.js';
+  import { getUsers, createUser, updateUser, deleteUser, logoutUser, getToken, parseJwt } from '../api.js';
+  const jwt = window.jwt;
+
+  // Get token
+  let token = getToken();
+  const payload = parseJwt(token);
+
+  if (payload.role !== "admin") {
+    window.location.href = "questions.html";
+  }
 
   async function loadUsers() {
     try {
