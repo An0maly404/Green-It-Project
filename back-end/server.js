@@ -260,3 +260,7 @@ function generateToken(user_id) {
 
     return sign(data, jwtSecretKey, { expiresIn: '24h' })
 }
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '../frontend/pages/main_login.html');
+});
