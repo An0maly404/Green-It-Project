@@ -31,7 +31,7 @@ export async function login(username, password) {
 
 export function logoutUser() {
   localStorage.clear();
-  window.location.href = 'index.html';
+  window.location.href = 'main_login.html';
 }
 
 
