@@ -3,16 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home page</title>
+    <title>Green IT - Home</title>
     <link rel="stylesheet" href="./style/style.css">
+    <style>
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(to right, #a5d6a7, #e8f5e9);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            color: #1b5e20;
+            margin-bottom: 1rem;
+        }
+        .hero .intro-text {
+            font-size: 1.2rem;
+            color: #4caf50;
+            line-height: 1.8;
+        }
+
+        /* Eco-Friendly Measures Section */
+        .eco-measures {
+            background-color: #f1f8e9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .eco-measures h2 {
+            font-size: 2rem;
+            color: #2e7d32;
+            margin-bottom: 1rem;
+        }
+        .eco-measures ul {
+            list-style-type: disc;
+            padding-left: 2rem;
+        }
+        .eco-measures ul li {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #388e3c;
+        }
+
+        /* Technical Features Section */
+        .technical-features {
+            background-color: #e8f5e9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .technical-features h2 {
+            font-size: 2rem;
+            color: #1b5e20;
+            margin-bottom: 1rem;
+        }
+        .technical-features ul {
+            list-style-type: square;
+            padding-left: 2rem;
+        }
+        .technical-features ul li {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #2e7d32;
+        }
+
+        /* Get Started Section */
+        .get-started {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: #c8e6c9;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .get-started h2 {
+            font-size: 2rem;
+            color: #1b5e20;
+            margin-bottom: 1rem;
+        }
+        .get-started p {
+            font-size: 1.2rem;
+            color: #388e3c;
+        }
+        .get-started .cta-link {
+            color: white;
+            background-color: #1b5e20;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .get-started .cta-link:hover {
+            background-color: #388e3c;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1b5e20;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+        footer p {
+            margin: 0.5rem 0;
+        }
+    </style>
 </head>
 <body>
     <header>
+        <div class="logo">Green IT</div>
         <nav>
             <a href="index.html">Home</a>
             <a href="main_login.html">Login</a>
             <a href="register.html">Register</a>
         </nav>
     </header>
+
+    <main>
+        <section class="hero">
+            <h1>Welcome to the Green IT Project</h1>
+            <p class="intro-text">
+                The Green IT Project is designed to help users measure and reduce their digital carbon footprint. 
+                By understanding the environmental impact of your digital activities, you can make informed decisions 
+                to minimize your ecological footprint.
+            </p>
+        </section>
+
+        <section class="eco-measures">
+            <h2>Our Eco-Friendly Measures</h2>
+            <ul>
+                <li><strong>Efficient Code</strong>: Optimized JavaScript and CSS to reduce resource usage.</li>
+                <li><strong>Next-Gen Images</strong>: Using WebP format for faster loading and reduced bandwidth.</li>
+                <li><strong>Lazy Loading</strong>: Images are loaded only when needed to save energy and bandwidth.</li>
+                <li><strong>Minimalist Design</strong>: A clean and simple interface to reduce unnecessary resource consumption.</li>
+                <li><strong>Carbon Footprint Awareness</strong>: Tools to calculate and track your digital carbon footprint.</li>
+            </ul>
+        </section>
+
+        <section class="technical-features">
+            <h2>Technical Features</h2>
+            <ul>
+                <li><strong>Secure Authentication</strong>: Passwords are hashed using SHA-256, and sessions are managed with JWTs.</li>
+                <li><strong>SQLite Database</strong>: Lightweight and efficient database for storing user data and scores.</li>
+                <li><strong>Serverless Deployment</strong>: Hosted on Vercel for scalability and eco-friendly cloud infrastructure.</li>
+                <li><strong>API Integration</strong>: Seamless communication between the frontend and backend using Axios.</li>
+                <li><strong>Admin Dashboard</strong>: Manage users and monitor scores with role-based access control.</li>
+            </ul>
+        </section>
+
+        <section class="get-started">
+            <h2>Get Started</h2>
+            <p>
+                Ready to take control of your digital carbon footprint? 
+                <a href="register.html" class="cta-link">Register</a> for an account or <a href="main_login.html" class="cta-link">log in</a> to get started!
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Green IT Project for Efrei. All rights reserved.</p>
+        <p>By Ian ROUVRAIS, Antoine LENOGUES, Antoine MEUNIER, Antoine IGLESIAS-TALLON, Nassim AININE</p>
+    </footer>
 </body>
 </html>
